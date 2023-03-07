@@ -14,6 +14,7 @@
 
 function wm_plotdata(allplotdata,qplots)
 
+allclear; 
 nplots = length(allplotdata); nx = ceil(sqrt(nplots)); ny = ceil(nplots/nx); 
 if(~exist('qplots')), qplots = [1:nplots]; end
 figure;
