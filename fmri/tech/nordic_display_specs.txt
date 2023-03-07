@@ -1,0 +1,6 @@
+09:12 AM 30/09/14
+DISPLAY SPECS FOR NORDIC NEURO-LAB AT HCG
+=========================================
+SVGA, 800 (x3) x 600 pixels
+FOV 30 deg horizontal and 23 deg vertical
+aspect ratio 4:3

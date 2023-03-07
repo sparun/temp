@@ -1,0 +1,30 @@
+# IGNORE data folder
+mlLib
+cfg/iscan
+cfg/ml
+cfg/oep
+templateFixation/data/
+templateTemporalSameDifferent/data/
+templateSpatialSameDifferent/data/
+templateVisualSearchOddball/data/
+
+# IGNORE bhv2 files
+templateFixation/*.bhv2
+templateTemporalSameDifferent/*.bhv2
+templateSpatialSameDifferent/*.bhv2
+templateVisualSearchOddball/*.bhv2
+
+# IGNORING TEMP FILES
+*.asv
+
+# IGNORE other files
+*.ffs_db
+
+
+
+
+
+
+
+
+

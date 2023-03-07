@@ -1,0 +1,256 @@
+Change log for series4 MonkeyLogic mllib and templateTasks - VisionLab, IISc
+
+Maintained by
+    Dec 2022 onward - Thomas    
+    Till Dec 2022   - Georgin/Thomas
+
+31-01-2023 VERSION 7.5.2 - thomas
+    - All timing files updated to have a taskWrapPerios (50 ms) at end of trial. This ensures we have a temporal 
+      difference successive toggleobjects. This is useful when: right after a toggleobject, eyejoytrack gets error
+      and visible stims are toggled off, we may not see a clear state flip in photodiode signal.
+    - For SSD and VSO, we are sending stimIDLocs as [targetID targetX targetY distractor01ID distractor01X distractor01Y
+      for nDistractors = Info.distractorPerTrial]
+
+30-01-2023 VERSION 7.5.1 - thomas
+    - All timing files updated to remove any timing variables as editables
+    - Task timing related variables that are hardcoded in timing file are now captures in data.UserVars of bhv2 file
+    - Added templateVisualChannelMap - fixation task with stimuli for visual channel mapping
+    - updated all good pause to 200ms, bad pause 500 ms, task and fix radius to 8 dva
+
+28-01-2023 VERSION 7.3.1 - thomas
+    - updated the folder name and organisation to match mllib in visionlabdocs (OneDrive)
+    - ml_exportStim.m updated to extract filenames also
+    - ml_startNetcamRecord.m updated to create standardized folder name on netcam pc
+
+05-01-2023 VERSION 7.1 - thomas	
+    - Cleaned up the cfg2 files for all task. Only subject 'test' is saved now. Add others as needed
+    - experiment name format updated. E.g.,  'S001-E01-TSD-taskName' where S is session and E is experiment run order on that day.
+    - ml_rewardVol2Time parameters (slope and intercept) updated after most recent rewardsystem calibration by Shubho and Debdyuti
+
+02-01-2023 VERSION 7.0 - thomas
+    - Major updated - old tasks won't run without required changes
+    - Renamed tasks based on new convention
+        - templateSD is now templateTemporalSameDifferent (TSD)
+        - templateSearch is now templateSpatialSameDifferent (SSD)
+        - templateOddball is now templateVisualSearchOddball (VSO)
+        - templateFixation is unchanged (FIX)
+        - all timing files are updated/renamed as required
+        - only 80 stims used in tasks
+        - conditions files will be created with prefix automatically (i.e FIX, TSD, SSD or VSO)
+        - no ~touchtarget for VSO anymore - (based on monkeyPerception experience - ref Thomas/Georgin)
+    - Major ML lib updates
+        - ml_loadEvents - eventNames for tasks changed to match new nomenclature (this affects usage in timing files)
+        - ml_makeConditions - updated on new nomenclature
+        - ml_getCircleLocations - useful tool to calcuate target distractor locations for circular array
+    
+23-12-2022 VERSION 6.2 - thomas
+    - ml_sendHeader        - now sends the actual file bhv file name (MLConfig.MLPath.DataFile) that updates each time we press 'RUN' in ML GUI.
+    - ml_startNetcamRecord - netcamPC IP and storage drive locations updated
+    - iscan cfg for juju and didi updated
+
+29-12-2021 VERSION 6.1 - thomas/georgin
+    -ml_startNetcamRecord.m - record destination drive on netcamPC changed to D:/ instead of E:/
+
+25-12-2021 VERSION 6.1 - thomas/georgin
+	Added decoding codes. 	
+	createL1str: This is a common L1_str creation codes across tasks. This code will pool data from ML (.bhv2) file, wired eCube (.bin), and wireless eCube (.bin) files and create L1_str.   
+	
+	wmLib: White matter based library used in createL1str.
+	- wm_spikeSortingThreshold.m : Basic threhsold based sorting. 
+	- wm_readWirelessData.m      : Basic function to read the wireless data from . bin files. 
+	- wm_readDigitalFiles.m      : Function to read the wired digital data from .bin files. 
+	- wm_readAnalogFiles.m       : Function to read the analog data from .bin files. 
+	- wm_headerUint16Double.m    : Internal subfunction used to decode header. 
+	- wm_findWirelessStartTime.m : Function to extract the wireless start time wrt the wired eCube start time. 
+	- wm_findNetcamStartTime.m   : Function to extract the netcam start time wrt the wired eCube start time.
+	- wm_extractTrialEventsAndFooter.m: Function to extract the Trials events and Footer from Experiment Events.
+	- wm_extractPhotodiodeEventTimes.m : Function to extract photodiode signal. This function returns time high-to-low and low-to-high transition times based on respective thresholds.  
+	- wm_extractExpEventsAndHeader.m   : Function to extract experiment events and header from the digital data. 
+	- wm_extractDigitalBits.m     : subFunction to extract the individual bits. 
+	- wm_ecubeProperties.m        : Function to store the eCube hardware related parameters. 
+	- wm_checkBhvEcubeDates.m     : Function to check if all the data files are recorded on the same day. 
+	- wm_addPtdEvents.m           : Function to add the trialwise photodiode signals. 
+
+18-11-2021 VERSION 6.0 - thomas/georgin
+	templateSD/Fix/Search
+	- all timing files now include eventmarker indicating task in trial footer
+    - expSetup in each templateExp now updated as fixSetup/sdSetip/searchSetup etc. and
+      includes verbose comments about what the code does.
+    - sdTiming.m updated to deal with delayPeriod == 0 and also with testOff ~= respPeriod. 
+      A new variable visibleStims is used to keep track of stimuli visible on screen (except ptd).
+	  This is useful to turn off only stimuli visible on outcome and to keep a separate ptd off 
+      toggleobject at end of trials. Reworked trial end to happen after reward and associated pauses.
+	  Included stimFixCue as TaskObject.
+	- calTiming.m calib point is now 0.5 dva radius and timing/variables updated to be similar
+      to sdTiming.m. Adjusted task objects pointers as wmFixCue is a new TaskObject in conditions file.
+    - fixTiming.m and searchTiming.m updated to latest spec (in spirit of sdTiming)
+    - stimuli ID and position is sent in all timing files as triads of ID,xPos and yPos (pos in DVA).
+    - photodiode signal in ML is collected in General Input 2 channel (some wierd bug with PhotoDiode assignment)
+    - Stimuli durations on screen are enabled with scanline threshold at 0 (to be done in photodiode tuner tool)
+    - this version works with ML version 2.2.20 (Jaewons first updates, find in X:\software\mlpc\monkeylogic)
+    	
+	mlLib   
+    - ml_makeConditionsSD.m fix size is now 0.1 dva radius and full yellow circle. Hold and response
+      buttons color is now dark green (rgb = [0 0.33 0]), included wmFixCue as TaskObject and wmFixCueState as input.
+	- ml_makeConditionsSearch.m/ml_makeConditionsFix.m updated to latest spec - changes similar to makeConditionsSD.
+	- ml_alertFunction.m now clears serialport object iScan upon any error in timing file. No need to restart MATLAB each time.
+	- ml_loadEvents.m added a value for NaN (exp.nan = 999) and a value for response made in task (bhv.respGiven)
+	- ml_loadEvents.m added events to indicated type of task (trl.taskXXXX)
+    - ml_alertFucntion.m includes an error in case scanline threshold for task isn't set as 0. Task will quit.
+      Please set scanline threshold as 0 in photodiode tuner tool.
+    - all ml_xxx functions updated to have comments to describe functionality
+
+29-08-2021 VERSION 5.3 - thomas/georgin
+	templateSD/Fix/Search
+	- calTiming.m now sends a vector of X and Y values (dva) for all calibration points shown using
+      trl.picPosShift in trial Footer
+	- ml_loadEvents.m includes trl.picPosShift to enable encoding and decoding of dva values to precision of 
+      3 decimal places between (-50 to 50 dva range), see within file for instructions
+
+04-03-2021 VERSION 5.2 - thomas/georgin
+	templateSD/Fix/Search
+	- updated all iscan cfg files for didi and juju
+
+21-02-2021 VERSION 5.1 - thomas/georgin
+	templateSD/Fix/Search
+	- templateSearch update to 3*3 array
+	- all timing files updated to send TrialRecord to fillDashboard
+	- Comments updated in all timings files
+	- fillDashboard cleaned and updated to take TrialRecord as second input (instead of TrialRecord.User)
+	- update cfg for and ml in each template to default monkeylogic_cfg2.mat (saved with all hardware settings as being used)
+	- update latest iscan cfg (didi updated) and all renamed to 'monkeynameDate'.	
+
+	mlLib
+	- ml_makeConditionsSearch - now 3*3 array, 1 target and 8 distractors from td pairs.
+	- ml_initExp - updated monkey names to include chacha and cocochacha in error message
+
+11-02-2021 VERSION 5.0 - thomas/georgin
+	templateSD/Fix/Search
+	- templateSearch code added for present absent visual search (using templateSD as base)
+	- test period is essentiall the search period and consequently there is no sample period
+	- calTiming.m has an additional editable ('taskStimRadius') over the regular calTiming.m
+
+	mlLib
+	- ml_makeConditionsSearch - 1 target and 3 distractors from td pairs. hold and resp buttons pink and x-pos is 25 dva (was 20dva in templateSD)
+	- ml_initExp - updated monkey names to include chacha and cocochacha in error message
+
+05-01-2021 VERSION 4.3 - thomas/georgin
+	templateSD/Fix
+	- calTiming.m/fixTiming.m - rectified further error in inability to deal with error on fixation after last stim
+	- correct outcome is assigned if outcome value hasn't be assigned as greater than -1 by the end of while loop
+	- NaN values initiated to max required size
+	- event names for stimuli in fixTiming updated to match with ml_loadEvents	
+	- expSetup.m for templateFixation updated to assign blocks
+
+	mlLib
+	- ml_loadEvents - eventmarker for stimuli in fixTiming updated to stim1On/stim1Off etc. (instead of fix1On/fix2On)
+	- ml_makeConditionsFix - deal with conditions less than 6
+
+01-01-2021 VERSION 4.2 - thomas/georgin
+	templateSD/Fix
+	- calTiming.m/fixTiming.m - error in some calib trials with missing events and erroneous fixation on 4th point rewarded is rectified
+	- 'outcome' variable was being reassigned within the while loop in calTiming.m
+	- an additional check to ensure correct number of stimuli (in both cal and fix timing) are fixated on is done now
+
+31-12-2020 VERSION 4.1 - thomas/georgin
+	templateSD/Fix
+	- editable variables renamed
+	- fixTiming.m updated to handle delayPeriod of 0 ms
+	- fixed fixation hold period (after fix init) implemented (set at 200ms) across timing files
+	- updated variable names in info field and in timing files (holdInitPeriod and fixInitPeriod)
+
+01-12-2020 VERSION 4.0 - thomas/georgin
+	templateSD/Fix
+	- calibration editable variables separated from task (sd or fix) editable variables
+	- corrected missing editable start event marker in calTiming.m
+	- update time function for trialStart and trialStop to 'datestr(now)' from clock (as millisecond precision wasn't there)
+	- added latest iscan dqw cfg files
+	
+	mlLib
+	- ml_initExp - updated PC name to 'VISIONLABML', corrected error message for header not sent
+	- ml_readSerialData - update time function to 'datestr(now)' from clock (as millisecond precision wasn't there)
+
+01-11-2020 VERSION 3.2 thomas/arun/jhilik
+	templateSD/Fix
+	- added trialFlag in TrialRecord.User for cal, fix and sd (NaN in cal trials).
+	- added condition of free choice trial in sd timing so monkey gets reward if Info.expectedResponse is 0.
+
+	mlLib
+	- ml_alertFunction - added comment about serial data saving at 'trial end'
+	- ml_makeCondiditonsFix - changed color of hold button from green to blue
+
+31-10-2020 VERSION 3.1 thomas/georgin
+	templateSD/Fix
+	- corrected missing calib and fix image number event markers in fixTiming and calTiming files. cfg2 file in templateFix updates to check 
+	  blockChange updates also (no significant change to other params).
+
+	mlLib	
+	- ml_blockChange - corrected instance of calib block not being removed from TrialRecord.User.blockList so that it's not played automatically
+	- ml_alertFunction - added a serialport read before callback initiation to read and discard erroneous data. Also serialdata is now converted 
+	  to double before being saved into TrialRecord.User.serialData (this is now a fast operation)	 
+
+29-10-2020 VERSION 3.0 - thomas/georgin
+	templateSD/Fix
+	- brought fixation template to sd template version (requisite codes and such)
+	- common calTIming.m across both templates (fix and sd) - as the editables are same between both tasks (even within a task,
+	  timing files should have common editables)
+	- simple fillDashboard.m for fixation tempalte that only shows editable variables and juice consumed
+
+	mlLib	
+	- ml_makeConditionsFix/SD - updated theses and removed redundant info values and rearranged all vis stimuli to be come after
+	  ptd,hold,fix,calib,audCorr and audIncorr so as to have commonality between calib files.
+	- ml_alert_function - removed encoding of serial data string to numbers as it added overhead in ITI. Now serial data collected
+	  in trial is directly dumped into TrialRecord.User.serialData{trialNum}
+	- ml_blockChange - checked and verified that it now selects the previous non calib block even if calib block was successively
+	  called twice manually. Will repeat the prior block in full, so ideally load calib block after a block has just ended.
+
+22-10-2020 - thomas/georgin
+	templateSD
+	- packing following editable variable into trial footer using start stop and shift markers (trl.edtStart..etc)
+		- goodPause - badPause - fixRadius - fixPeriod - calHoldPeriod - rewardVol (*1000, hence will be in microlitres)
+	- added check.linesEven before trl.start and check.linesOdd after trl.stop eventmarkers. Good visual marker on OEP lfp viewer
+	- photodiode cue now simply flips state at every visual event in the trial (turned off at beginning and end of trial)
+	- photodiode signal is now in analog mode instead of digital due to iffy reliability in digtial mode
+	- updated fillDashboard.m to calculate and display errors correctly and differentiate type of error, removed weighted accuracy
+	- audio files now located in folder 'aud' instead of ambiguous 'dep'
+	- added config files from iscan(DQW settings), oep(Channel config) and ml(cfg2.mat) into folder 'cfg'
+
+	mlLib	
+	- ml_mlconcatenate: modified few lines(commented within) which gave error for touchpoints being NaN
+	- ml_loadEvents: added start stop and shift markers for editable variables and changed ascii shift from 10000 to 200000
+	- Added descriptions and comments for all functions in lib
+	- Removed unneccessary/deprecated functions
+
+15-10-2020 VERSION 1.0 - thomas/georgin
+	templateSD
+	- removed dependency on legacy iscan serial code
+	- noe use MATLABs own serialport function (always add default file to top of path as ML also has similarly named function)
+	- updated calibration timing file to have cal point acquire time and hodl time as editable vars
+	- cleared up timing code text (removed sections and unwanted variables)
+	- new eye calib settings as juice spout and touchscreen height increased by ~2.5cm.
+	- now there are individual monkeys dqw settings files for iscan also (eg: illumBelowTrackerAbovCoCo20201015.def)
+
+	mlLib
+	- ml_initExp: asks if netcam auto record is needed.
+	- ml_startNetcamRecord, ml_stopNetcamRecord: requires watchtower to be on and cameras bound
+	  starts and stops netcam record remotely and makes appropriate folder to save files in (E:\series4\expFolder\monkeyFolder\*.mp4)
+	- ml_packHeader: corrected wrong variable name issue
+	- ml_sendHeader: send bhv file name also	
+	- ml_alert_function: updated to close serial port correctly on exp end (but any error in ML task requires MATLAB restart)
+	- ml_loadEvents: added codes for bhvName start and stop
+	- ml_makeConditionSD: increased fixation point size to 0.6dva from 0.3dva
+
+12-10-2020 - VERSION 0.1 - thomas/georgin
+	templateSD 
+	- corrected all rt's from eyejoytrack into time from trial start
+	- incorporated a fixation maintenance period after fix acquire
+	- removed any clampEye codes (will add later if needed)
+	- still using legacy PsychtoolBox serialport funcs
+	- copied cfg file from generalSDV_0.0 as that is latest
+
+28-09-2020 VERSION 0.0 - thomas/georgin/zhivago/jhilik
+	templateSD
+	- used to retrain monkeys
+	- clampeye disabled to check raw traces
+	- no fixation maintenance after fix acquire
+	- all eyejoytracks (other than for monkey choice) store rt

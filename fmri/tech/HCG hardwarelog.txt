@@ -1,0 +1,4 @@
+First scan at HCG	: 24 Nov 2014
+Projector setup		: 29 Dec 2015
+HCG scan tests flagged	: 24 Nov 2015
+HCG hardware changed 	: 16 Apr 2016
